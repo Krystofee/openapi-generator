@@ -985,9 +985,6 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
             if (paramName.endsWith("_request")) {
                 return "request";
             }
-            if (paramName.startsWith("patched_") && paramName.endsWith("_request")) {
-                return "request";
-            }
             return paramName;
         }
 
@@ -1327,7 +1324,6 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
             this.returnType = o.returnType;
             this.returnFormat = o.returnFormat;
             this.httpMethod = o.httpMethod;
-            // this.retinoOperationName = this.retinoOperationNameFromOperationId(o.operationId);
             this.returnBaseType = o.returnBaseType;
             this.returnContainer = o.returnContainer;
             this.summary = o.summary;
