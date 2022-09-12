@@ -981,6 +981,16 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
             return isDateTime && "Date".equals(dataType);
         }
 
+        private String retinoTransformRequestParamName(String paramName) {
+            if (paramName.endsWith("_request")) {
+                return "request";
+            }
+            if (paramName.startsWith("patched_") && paramName.endsWith("_request")) {
+                return "request";
+            }
+            return paramName;
+        }
+
         public ExtendedCodegenParameter(CodegenParameter cp) {
             super();
 
@@ -996,7 +1006,7 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
             this.isModel = cp.isModel;
             this.isExplode = cp.isExplode;
             this.baseName = cp.baseName;
-            this.paramName = cp.paramName;
+            this.paramName = this.retinoTransformRequestParamName(cp.paramName);
             this.dataType = cp.dataType;
             this.datatypeWithEnum = cp.datatypeWithEnum;
             this.dataFormat = cp.dataFormat;
@@ -1259,6 +1269,31 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
         boolean hasReturnPassthroughVoid, returnTypeSupportsEntities, returnTypeIsModel, returnTypeIsArray;
         String returnTypeAlternate, returnBaseTypeAlternate, returnPassthrough;
 
+        private String retinoOperationNameFromOperationId(String operationId) {
+            if (operationId.endsWith("List")) {
+                return "list";
+            }
+            if (operationId.endsWith("Retrieve")) {
+                return "retrieve";
+            }
+            if (operationId.endsWith("Retrieve2")) {
+                return "retrieve2";
+            }
+            if (operationId.endsWith("Create")) {
+                return "create";
+            }
+            if (operationId.endsWith("Destroy")) {
+                return "destroy";
+            }
+            if (operationId.endsWith("Update")) {
+                return "put";
+            }
+            if (operationId.endsWith("PartialUpdate")) {
+                return "patch";
+            }
+            throw new RuntimeException("Unknown method appended to operation name: " + operationId);
+        }
+
         public ExtendedCodegenOperation(CodegenOperation o) {
             super();
 
@@ -1292,6 +1327,7 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
             this.returnType = o.returnType;
             this.returnFormat = o.returnFormat;
             this.httpMethod = o.httpMethod;
+            // this.retinoOperationName = this.retinoOperationNameFromOperationId(o.operationId);
             this.returnBaseType = o.returnBaseType;
             this.returnContainer = o.returnContainer;
             this.summary = o.summary;
@@ -1323,7 +1359,7 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
             this.requestBodyExamples = o.requestBodyExamples;
             this.externalDocs = o.externalDocs;
             this.vendorExtensions = o.vendorExtensions;
-            this.nickname = o.nickname;
+            this.nickname = this.retinoOperationNameFromOperationId(o.nickname);
             this.operationIdOriginal = o.operationIdOriginal;
             this.operationIdLowerCase = o.operationIdLowerCase;
             this.operationIdCamelCase = o.operationIdCamelCase;
