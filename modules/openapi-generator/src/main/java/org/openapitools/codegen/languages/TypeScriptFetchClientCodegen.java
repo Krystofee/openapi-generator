@@ -1282,11 +1282,12 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
             if (operationId.endsWith("Destroy")) {
                 return "destroy";
             }
-            if (operationId.endsWith("Update")) {
-                return "put";
-            }
+            // Note that "PartialUpdate" must be before "Update"
             if (operationId.endsWith("PartialUpdate")) {
                 return "patch";
+            }
+            if (operationId.endsWith("Update")) {
+                return "put";
             }
             throw new RuntimeException("Unknown method appended to operation name: " + operationId);
         }
